@@ -40,6 +40,10 @@ const ConfirmationModal = ({
               <strong>Notes:</strong> {data?.notes}
             </div>
           )}
+          <div className="flex items-start gap-1">
+            <strong>Category:</strong>
+            <p>{data.category}</p>
+          </div>
 
           <div className="flex items-start gap-1">
             <strong>Date:</strong>

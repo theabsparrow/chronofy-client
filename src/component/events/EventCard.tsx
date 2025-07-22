@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
 import type { TEvent } from "../../types/events.types";
+import { useUpdateEvent } from "../../hook/useUpdateEvent";
+import { toast } from "sonner";
+import DeleteButton from "./DeleteButton";
 
 const categoryColorMap: Record<string, string> = {
   Work: "bg-green-600",
@@ -14,6 +17,28 @@ const categoryColorMap: Record<string, string> = {
 
 const EventCard = ({ event }: { event: TEvent }) => {
   const categoryBg = categoryColorMap[event.category] || "bg-gray-500";
+
+  const { mutateAsync } = useUpdateEvent();
+
+  const handleArchive = async (data: boolean) => {
+    const payload = {
+      id: event?._id,
+      updatedata: {
+        archived: data,
+      },
+    };
+
+    const toastId = toast.loading("Archive updating...");
+
+    try {
+      await mutateAsync(payload);
+      toast.success("Archive updated successfully!", { id: toastId });
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update archive", { id: toastId });
+    }
+  };
+
   return (
     <section className="w-[90vw] md:w-[25vw] bg-white rounded-md p-4 shadow-sm border mb-4 flex flex-col ">
       <div className="flex-grow">
@@ -49,7 +74,8 @@ const EventCard = ({ event }: { event: TEvent }) => {
 
           <div className="flex items-center justify-between mt-2">
             <button
-              className={`text-sm px-3 py-1 rounded border ${
+              onClick={() => handleArchive(!event?.archived)}
+              className={`text-sm px-3 py-1 rounded border cursor-pointer ${
                 event.archived
                   ? "bg-gray-200 text-gray-600"
                   : "bg-green-100 text-green-700 hover:bg-green-200"
@@ -57,16 +83,14 @@ const EventCard = ({ event }: { event: TEvent }) => {
             >
               {event.archived ? "Unarchive" : "Archive"}
             </button>
-            <button className="text-sm px-3 py-1 rounded border bg-red-100 text-red-700 hover:bg-red-200 transition">
-              Delete
-            </button>
+            <DeleteButton id={event?._id} />
           </div>
         </div>
       </div>
 
       <div className="mt-4 ">
         <Link
-          to={`event/${event._id}`}
+          to={`/event/${event._id}`}
           className="bg-green-700 px-2 py-1 rounded-lg text-white text-base"
         >
           View Details

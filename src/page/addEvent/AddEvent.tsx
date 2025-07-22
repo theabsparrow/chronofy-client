@@ -7,6 +7,9 @@ import { categorizeEvent } from "../../service/categorizeEVents";
 import { useState } from "react";
 import ConfirmationModal from "./ConfirmationModal";
 import { toast } from "sonner";
+import LoadingModal from "../../component/loader/LoadingModal";
+import { useCreateEvent } from "../../hook/useCreateEvent";
+import { useNavigate } from "react-router-dom";
 
 const AddEvent = () => {
   const [showModal, setShowModal] = useState(false);
@@ -19,6 +22,7 @@ const AddEvent = () => {
     date: "",
     time: "",
   });
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -30,6 +34,8 @@ const AddEvent = () => {
     mode: "onChange",
     criteriaMode: "all",
   });
+
+  const { mutateAsync } = useCreateEvent();
 
   const onSubmit = async (data: TCreateEvent) => {
     const eventCategory = categorizeEvent(
@@ -48,10 +54,10 @@ const AddEvent = () => {
     setTimeout(() => {
       setIsloading(false);
       setModalContent(true);
-    }, 1000);
+    }, 5000);
   };
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (): Promise<void> => {
     const templateParams: TCreateEvent = {
       title: formData.title,
       date: formData.date,
@@ -60,10 +66,24 @@ const AddEvent = () => {
     if (formData.notes) {
       templateParams.notes = formData.notes;
     }
-    const toastId = "event";
-    toast.loading("event creating", { id: toastId, duration: 2000 });
     if (!templateParams) {
-      return toast.error("faild to send message");
+      toast.error("faild to send message");
+      return;
+    }
+    const toastId = "event";
+    toast.loading("Creating event...", { id: toastId });
+
+    try {
+      await mutateAsync(templateParams);
+      toast.success("Event created successfully!", { id: toastId });
+      reset();
+      navigate("/");
+      setShowModal(false);
+      setOverleyVisible(false);
+      setModalContent(false);
+    } catch (error) {
+      toast.error("Failed to create event. Please try again.", { id: toastId });
+      console.error("Event creation error:", error);
     }
   };
 
@@ -162,12 +182,7 @@ const AddEvent = () => {
           {overlyVisible && (
             <div className="absolute inset-0 bg-black/60 dark:bg-white/20 backdrop-blur-sm z-10" />
           )}
-          {isLodaing && (
-            <div className="relative z-20">
-              {" "}
-              <ModalSkeleteon />
-            </div>
-          )}
+          {isLodaing && <LoadingModal />}
           {modalContent && (
             <div className="relative z-20">
               <ConfirmationModal
