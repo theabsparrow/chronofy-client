@@ -7,7 +7,7 @@ const Navbar = () => {
   const routes = [
     { path: "/", name: "Home" },
     { path: "/archived", name: "Archived" },
-    { path: "/addEvent", name: "Add event" },
+    { path: "/add-event", name: "Add event" },
   ];
 
   return (
@@ -21,7 +21,7 @@ const Navbar = () => {
 
       <ul className="flex md:space-x-6">
         {routes.map((route) => (
-          <li>
+          <li key={route.name}>
             <NavLink
               to={route.path}
               end

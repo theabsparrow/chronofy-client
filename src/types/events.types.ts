@@ -19,3 +19,10 @@ export type TEvent = {
   createdAt?: Date;
   updatedAt?: Date;
 };
+export type TCreateEvent = {
+  title: string;
+  date: string;
+  time: string;
+  notes?: string;
+  category?: TCategory;
+};

@@ -3,6 +3,7 @@ import Layout from "../layout/Layout";
 import ErrorPage from "../page/errorPage/ErrorPage";
 import HomePage from "../page/home/HomePage";
 import Archived from "../page/archived/Archived";
+import AddEvent from "../page/addEvent/AddEvent";
 
 export const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ export const router = createBrowserRouter([
       {
         path: "archived",
         element: <Archived />,
+      },
+      {
+        path: "add-event",
+        element: <AddEvent />,
       },
     ],
   },
