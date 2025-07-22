@@ -1,5 +1,11 @@
+import Events from "../../component/events/Events";
+
 const HomePage = () => {
-  return <div className="text-2xl">this is home page</div>;
+  return (
+    <section>
+      <Events />
+    </section>
+  );
 };
 
 export default HomePage;

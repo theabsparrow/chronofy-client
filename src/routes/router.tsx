@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Layout from "../layout/Layout";
 import ErrorPage from "../page/errorPage/ErrorPage";
 import HomePage from "../page/home/HomePage";
+import Archived from "../page/archived/Archived";
 
 export const router = createBrowserRouter([
   {
@@ -12,6 +13,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />,
+      },
+      {
+        path: "archived",
+        element: <Archived />,
       },
     ],
   },
